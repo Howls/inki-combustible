@@ -14,6 +14,7 @@ import argparse
 import csv
 import json
 import sys
+import time
 import unicodedata
 from datetime import date, datetime
 from pathlib import Path
@@ -63,13 +64,29 @@ def parse_price(v):
         return None
 
 
+def fetch_with_retries(url, attempts=5):
+    """La API del Ministerio a veces corta la conexion; reintenta con espera."""
+    last = None
+    for i in range(attempts):
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=90)
+            r.raise_for_status()
+            return r.content
+        except requests.RequestException as e:
+            last = e
+            wait = 20 * (i + 1)
+            print(f"Intento {i + 1}/{attempts} fallido: {e}", file=sys.stderr)
+            if i < attempts - 1:
+                print(f"Reintento en {wait}s", file=sys.stderr)
+                time.sleep(wait)
+    sys.exit(f"No se pudo consultar la API tras {attempts} intentos: {last}")
+
+
 def load_response(sample):
     if sample:
         raw = Path(sample).read_bytes()
     else:
-        r = requests.get(API_URL, headers=HEADERS, timeout=90)
-        r.raise_for_status()
-        raw = r.content
+        raw = fetch_with_retries(API_URL)
     # utf-8-sig por si la respuesta trae BOM
     return json.loads(raw.decode("utf-8-sig"))
 
