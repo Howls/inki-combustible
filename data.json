@@ -1,22 +1,25 @@
 {
- "fecha": "2026-10-22",
+ "fecha": "2026-10-23",
  "municipio": "Vilanova i la Geltru",
  "estaciones": 11,
  "dias": [
-  "22/10"
+  "22/10",
+  "23/10"
  ],
  "g95": {
   "hoy": 1.733,
-  "delta": 0.0,
+  "delta": -0.0,
   "serie": [
+   1.734,
    1.733
   ]
  },
  "gasoil": {
-  "hoy": 1.873,
-  "delta": 0.0,
+  "hoy": 1.867,
+  "delta": -0.006,
   "serie": [
-   1.873
+   1.873,
+   1.867
   ]
  },
  "frase": "Recogiendo datos, vuelve en unos dias"
